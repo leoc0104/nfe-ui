@@ -47,9 +47,26 @@ export class RegisterComponent extends AuthBaseComponent {
     }
 
     this.loading = true;
-    this.authService.register(this.form.getRawValue() as any).subscribe({
-      next: () => this.handleSuccess('Conta criada com sucesso!'),
+    this.register();
+  }
+
+  private register(): void {
+    const { name, email, password, confirmPassword } = this.form.getRawValue() as any;
+    
+    this.authService.register({ name, email, password, confirmPassword }).subscribe({
+      next: () => this.authenticateAfterRegister(email, password),
       error: (err) => this.handleError(err, 'Erro ao criar conta.'),
+    });
+  }
+
+  private authenticateAfterRegister(email: string, password: string): void {
+    this.authService.login({ email, password }).subscribe({
+      next: () => this.handleSuccess('Conta criada e autenticada com sucesso!'),
+      error: (err) => {
+        this.toast.error('Conta criada, mas falha no login automático.');
+        this.router.navigate(['/login']);
+        this.loading = false;
+      },
     });
   }
 }
