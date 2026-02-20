@@ -1,9 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
-import { ToastService } from '../../../core/services/toast.service';
+import { RouterLink } from '@angular/router';
+import { AuthBaseComponent } from '../auth-base.component';
 
 @Component({
   selector: 'app-register',
@@ -11,13 +10,8 @@ import { ToastService } from '../../../core/services/toast.service';
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './register.component.html',
 })
-export class RegisterComponent {
+export class RegisterComponent extends AuthBaseComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
-  private readonly toast = inject(ToastService);
-
-  loading = false;
 
   form = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
@@ -54,14 +48,8 @@ export class RegisterComponent {
 
     this.loading = true;
     this.authService.register(this.form.getRawValue() as any).subscribe({
-      next: () => {
-        this.toast.success('Conta criada com sucesso!');
-        this.router.navigate(['/dashboard/upload']);
-      },
-      error: (err) => {
-        this.toast.error(err?.error?.message ?? 'Erro ao criar conta.');
-        this.loading = false;
-      },
+      next: () => this.handleSuccess('Conta criada com sucesso!'),
+      error: (err) => this.handleError(err, 'Erro ao criar conta.'),
     });
   }
 }

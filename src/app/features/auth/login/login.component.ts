@@ -1,9 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
-import { ToastService } from '../../../core/services/toast.service';
+import { RouterLink } from '@angular/router';
+import { AuthBaseComponent } from '../auth-base.component';
 
 @Component({
   selector: 'app-login',
@@ -11,13 +10,8 @@ import { ToastService } from '../../../core/services/toast.service';
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
 })
-export class LoginComponent {
+export class LoginComponent extends AuthBaseComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
-  private readonly toast = inject(ToastService);
-
-  loading = false;
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -42,18 +36,16 @@ export class LoginComponent {
 
   private login(): void {
     this.authService.login(this.form.getRawValue() as any).subscribe({
-      next: () => this.handleSuccess(),
-      error: (err) => this.handleError(err),
+      next: () => this.handleLoginSuccess(),
+      error: (err) => this.handleLoginError(err),
     });
   }
 
-  private handleSuccess(): void {
-    this.toast.success('Login realizado com sucesso!');
-    this.router.navigate(['/dashboard/upload']);
+  private handleLoginSuccess(): void {
+    this.handleSuccess('Login realizado com sucesso!');
   }
 
-  private handleError(err: any): void {
-    this.toast.error(err?.error?.message ?? 'Credenciais inválidas.');
-    this.loading = false;
+  private handleLoginError(err: any): void {
+    this.handleError(err, 'Credenciais inválidas.');
   }
 }
