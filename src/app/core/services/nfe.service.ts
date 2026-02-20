@@ -23,6 +23,6 @@ export class NFeService {
     const formData = new FormData();
     formData.append('file', file);
     
-    return this.http.post(`${this.BASE}/uploads`, formData);
+    return this.http.post(`${this.BASE}/nfe/uploads`, formData);
   }
 }
