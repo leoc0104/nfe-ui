@@ -1,4 +1,4 @@
-# NF-e Manager — Front-end
+# NF-e Manager UI
 
 A single-page application for managing **Notas Fiscais Eletrônicas (NF-e)** built with **Angular 21** and **Tailwind CSS 4**.
 
@@ -21,7 +21,7 @@ A single-page application for managing **Notas Fiscais Eletrônicas (NF-e)** bui
 
 | Module | Description |
 |---|---|
-| **Authentication** | Login and Register forms with JWT stored in LocalStorage |
+| **Authentication** | Login and Register forms with JWT stored in LocalStorage. Registration automatically authenticates the user and redirects to dashboard |
 | **Auth Guard** | Protects all `/dashboard` routes — redirects unauthenticated users to `/login` |
 | **HTTP Interceptor** | Automatically attaches `Authorization: Bearer <token>` to every API request |
 | **Upload** | Drag-and-drop or file-picker to upload NF-e XML files, with per-file success/error feedback |
@@ -37,6 +37,7 @@ A single-page application for managing **Notas Fiscais Eletrônicas (NF-e)** bui
 - **Tailwind CSS 4** — Utility-first styling via PostCSS plugin
 - **Reactive Forms** — Form validation for login and register
 - **Angular Router** — Lazy-loaded routes for optimal bundle splitting
+- **Internationalization** — pt-BR locale configured for number and date formatting
 - **Docker** — Containerised development environment
 
 ---
@@ -49,7 +50,7 @@ src/
     ├── app.ts                  # Root component (RouterOutlet + Toast)
     ├── app.html                # Root template
     ├── app.routes.ts           # All application routes
-    ├── app.config.ts           # provideRouter, provideHttpClient + interceptor
+    ├── app.config.ts           # provideRouter, provideHttpClient, interceptor, locale (pt-BR)
     │
     ├── interfaces/             # TypeScript data contracts
     │   ├── nfe.interface.ts    # NFe, NFeItem, NFeListResponse
@@ -152,6 +153,8 @@ export interface NFe {
   issue_date: Date;
   issuer_name: string;  // Issuer name
   issuer_cnpj: string;  // Issuer CNPJ
+  recipient_name: string;  // Recipient name
+  recipient_cnpj: string;  // Recipient CNPJ
   total_value: number;
   items: NFeItem[];
   created_at: Date;
@@ -162,6 +165,7 @@ export interface NFeItem {
   code: string;
   description: string;
   ncm: string;          // Fiscal product code
+  cfop: string;         // Fiscal operation code
   quantity: number;
   unit_price: number;
   total_value: number;
