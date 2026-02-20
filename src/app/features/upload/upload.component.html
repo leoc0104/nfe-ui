@@ -1,0 +1,101 @@
+<div class="max-w-2xl mx-auto">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Upload de NF-e</h1>
+    <p class="text-gray-500 text-sm mt-1">Importe arquivos XML de Notas Fiscais Eletrônicas.</p>
+  </div>
+
+  <!-- Drop Zone -->
+  <div
+    class="border-2 border-dashed rounded-2xl p-12 text-center transition-all cursor-pointer"
+    [class.border-blue-500]="isDragging()"
+    [class.bg-blue-50]="isDragging()"
+    [class.border-gray-300]="!isDragging()"
+    [class.bg-gray-50]="!isDragging()"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave()"
+    (drop)="onDrop($event)"
+    (click)="fileInput.click()"
+  >
+    <input
+      #fileInput
+      type="file"
+      multiple
+      accept=".xml"
+      class="hidden"
+      (change)="onFileSelect($event)"
+    />
+
+    <div class="flex flex-col items-center gap-3 pointer-events-none">
+      @if (uploading()) {
+        <svg class="animate-spin w-12 h-12 text-blue-500" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+        </svg>
+        <p class="text-blue-600 font-medium">Enviando arquivo...</p>
+      } @else {
+        <svg
+          class="w-12 h-12 transition-colors"
+          [class.text-blue-500]="isDragging()"
+          [class.text-gray-400]="!isDragging()"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <div>
+          <p class="text-base font-semibold text-gray-700">
+            @if (isDragging()) { Solte os arquivos aqui } @else { Arraste arquivos XML }
+          </p>
+          <p class="text-sm text-gray-400 mt-1">ou <span class="text-blue-600 font-medium">clique para selecionar</span></p>
+        </div>
+        <p class="text-xs text-gray-400 bg-white px-3 py-1 rounded-full border border-gray-200">
+          Apenas arquivos .xml
+        </p>
+      }
+    </div>
+  </div>
+
+  <!-- Upload History -->
+  @if (uploadedFiles().length > 0) {
+    <div class="mt-6">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-semibold text-gray-700">Arquivos processados</h3>
+        <button
+          (click)="clearHistory()"
+          class="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          Limpar histórico
+        </button>
+      </div>
+      <div class="space-y-2">
+        @for (file of uploadedFiles(); track file.name) {
+          <div class="flex items-center gap-3 bg-white border rounded-lg px-4 py-3 shadow-sm">
+            <div
+              class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold"
+              [class.bg-emerald-100]="file.status === 'success'"
+              [class.text-emerald-600]="file.status === 'success'"
+              [class.bg-red-100]="file.status === 'error'"
+              [class.text-red-600]="file.status === 'error'"
+            >
+              @if (file.status === 'success') { ✓ } @else { ✕ }
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-800 truncate">{{ file.name }}</p>
+              <p class="text-xs text-gray-500">{{ file.message }}</p>
+            </div>
+            <span
+              class="text-xs font-semibold px-2 py-0.5 rounded-full"
+              [class.bg-emerald-100]="file.status === 'success'"
+              [class.text-emerald-700]="file.status === 'success'"
+              [class.bg-red-100]="file.status === 'error'"
+              [class.text-red-700]="file.status === 'error'"
+            >
+              {{ file.status === 'success' ? 'Sucesso' : 'Erro' }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
