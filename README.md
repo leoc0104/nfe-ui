@@ -13,8 +13,6 @@ A single-page application for managing **Notas Fiscais Eletrônicas (NF-e)** bui
 - [API Integration](#api-integration)
 - [Data Interfaces](#data-interfaces)
 - [Getting Started](#getting-started)
-  - [Running with Docker (recommended)](#running-with-docker-recommended)
-  - [Running locally without Docker](#running-locally-without-docker)
 - [Environment & Configuration](#environment--configuration)
 
 ---
@@ -175,8 +173,6 @@ export interface NFeItem {
 
 ## Getting Started
 
-### Running with Docker (recommended)
-
 **Prerequisites:** Docker and Docker Compose installed.
 
 ```bash
@@ -192,7 +188,7 @@ The app will be available at **http://localhost:4200**.
 
 Hot-reload is enabled via `--poll 2000` — file changes on the host are reflected inside the container automatically.
 
-> **First-time permission fix:** If `npm install` fails with `EACCES`, run once:
+> **Permission fix:** If `npm install` fails with `EACCES` on first run, execute once:
 > ```bash
 > docker compose run --rm --user root app chown -R node:node /app/node_modules
 > ```
