@@ -2,7 +2,7 @@
   <!-- Back Button -->
   <button
     (click)="goBack()"
-    class="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition-colors mb-6"
+    class="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition-colors mb-6 cursor-pointer"
   >
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -32,12 +32,19 @@
         </span>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <!-- Issuer -->
-        <div class="col-span-2 bg-gray-50 rounded-lg p-4">
+        <div class="bg-gray-50 rounded-lg p-4">
           <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Emitente</p>
           <p class="text-sm font-semibold text-gray-900">{{ nfe()!.issuer_name }}</p>
           <p class="text-sm text-gray-500 font-mono">{{ formatCnpj(nfe()!.issuer_cnpj) }}</p>
+        </div>
+
+        <!-- Recipient -->
+        <div class="bg-gray-50 rounded-lg p-4">
+          <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Destinatário</p>
+          <p class="text-sm font-semibold text-gray-900">{{ nfe()!.recipient_name }}</p>
+          <p class="text-sm text-gray-500 font-mono">{{ formatCnpj(nfe()!.recipient_cnpj) }}</p>
         </div>
 
         <!-- Issue Date -->
@@ -75,19 +82,21 @@
                 <th class="px-6 py-3 font-semibold text-gray-600">Código</th>
                 <th class="px-6 py-3 font-semibold text-gray-600">Descrição</th>
                 <th class="px-6 py-3 font-semibold text-gray-600">NCM</th>
+                <th class="px-6 py-3 font-semibold text-gray-600">CFOP</th>
                 <th class="px-6 py-3 font-semibold text-gray-600 text-right">Qtd.</th>
                 <th class="px-6 py-3 font-semibold text-gray-600 text-right">V. Unitário</th>
                 <th class="px-6 py-3 font-semibold text-gray-600 text-right">V. Total</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-              @for (item of nfe()!.items; track item.code) {
+              @for (item of nfe()!.items; track item.id) {
                 <tr class="hover:bg-gray-50 transition-colors">
                   <td class="px-6 py-4 font-mono text-gray-700 text-xs">{{ item.code }}</td>
                   <td class="px-6 py-4 text-gray-800">{{ item.description }}</td>
                   <td class="px-6 py-4 font-mono text-gray-500 text-xs">{{ item.ncm }}</td>
+                  <td class="px-6 py-4 font-mono text-gray-500 text-xs">{{ item.cfop }}</td>
                   <td class="px-6 py-4 text-right text-gray-700">
-                    {{ item.quantity | number : '1.2-2' : 'pt-BR' }}
+                    {{ item.quantity | number : '1.0-0' : 'pt-BR' }}
                   </td>
                   <td class="px-6 py-4 text-right text-gray-700">{{ formatCurrency(item.unit_price) }}</td>
                   <td class="px-6 py-4 text-right font-semibold text-gray-900">{{ formatCurrency(item.total_value) }}</td>
@@ -96,7 +105,7 @@
             </tbody>
             <tfoot>
               <tr class="bg-gray-50 border-t-2 border-gray-200">
-                <td colspan="5" class="px-6 py-3 text-right text-sm font-semibold text-gray-700">
+                <td colspan="6" class="px-6 py-3 text-right text-sm font-semibold text-gray-700">
                   Total Geral
                 </td>
                 <td class="px-6 py-3 text-right text-sm font-bold text-blue-700">

@@ -6,6 +6,8 @@ export interface NFe {
   issue_date: Date;
   issuer_name: string;
   issuer_cnpj: string;
+  recipient_name: string;
+  recipient_cnpj: string;
   total_value: number;
   items: NFeItem[];
   created_at: Date;
@@ -16,6 +18,7 @@ export interface NFeItem {
   code: string;
   description: string;
   ncm: string;
+  cfop: string;
   quantity: number;
   unit_price: number;
   total_value: number;
